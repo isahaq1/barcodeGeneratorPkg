@@ -31,5 +31,15 @@
   },
   "bin": [
     "src/CLI/generate.php"
-  ]
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Isahaq\\Barcode\\Providers\\BarcodeServiceProvider"
+      ],
+      "aliases": {
+        "Barcode": "Isahaq\\Barcode\\Facades\\Barcode"
+      }
+    }
+  }
 }
