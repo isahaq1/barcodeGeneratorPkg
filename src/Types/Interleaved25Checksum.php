@@ -1,8 +1,8 @@
 <?php
 
-namespace UniversalBarcodeGenerator\Types;
+namespace Isahaq\Barcode\Types;
 
-use UniversalBarcodeGenerator\Barcode;
+use Isahaq\Barcode\Barcode;
 
 class Interleaved25Checksum implements BarcodeTypeInterface
 {
