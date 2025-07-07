@@ -1,0 +1,34 @@
+{
+  "name": "isahaq/barcode",
+  "description": "A universal barcode generator package supporting multiple barcode types and output formats, with extra features like batch generation, watermarking, validation, and CLI.",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "barcode",
+    "qrcode",
+    "generator",
+    "laravel",
+    "php"
+  ],
+  "authors": [
+    {
+      "name": "Isahaq",
+      "email": "isahaq01@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Isahaq\\Barcode\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "ext-mbstring": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  },
+  "bin": [
+    "src/CLI/generate.php"
+  ]
+}
