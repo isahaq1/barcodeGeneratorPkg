@@ -36,6 +36,7 @@ use Isahaq\Barcode\Types\PharmaCodeTwoTracks;
 use Isahaq\Barcode\Renderers\PNGRenderer;
 use Isahaq\Barcode\Renderers\SVGRenderer;
 use Isahaq\Barcode\Renderers\HTMLRenderer;
+use Isahaq\Barcode\Renderers\ImagickRenderer;
 
 class BarcodeService
 {

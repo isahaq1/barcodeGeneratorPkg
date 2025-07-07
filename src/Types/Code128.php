@@ -6,37 +6,60 @@ use Isahaq\Barcode\Barcode;
 
 class Code128 implements BarcodeTypeInterface
 {
-    // Code128B character set (ASCII 32-127)
+    // Code128B patterns for ASCII 32-127, plus start/stop/checksum (from spec)
     private static array $patterns = [
-        // Patterns for Code128B (partial, for demo)
-        // Format: [bar/space widths...], e.g. [2,1,2,2,2,2] for ' ' (space)
-        // Real implementation should include all 106 patterns
-        ' ' => [2,1,2,2,2,2], // ASCII 32
-        'A' => [2,2,2,1,2,2], // ASCII 65
-        'B' => [2,2,2,2,2,1], // ASCII 66
-        'C' => [1,2,1,2,2,3], // ASCII 67
-        // ... (add more patterns for full support)
+        // 0-105: bar/space widths for each symbol (6 elements each)
+        [2,1,2,2,2,2], [2,2,2,1,2,2], [2,2,2,2,2,1], [1,2,1,2,2,3], [1,2,1,3,2,2], [1,3,1,2,2,2], [1,2,2,2,1,3], [1,2,2,3,1,2], [1,3,2,2,1,2], [2,2,1,2,1,3], // 0-9
+        [2,2,1,3,1,2], [2,3,1,2,1,2], [1,1,2,2,3,2], [1,2,2,1,3,2], [1,2,2,2,3,1], [1,1,3,2,2,2], [1,2,3,1,2,2], [1,2,3,2,2,1], [2,2,3,2,1,1], [2,2,1,1,3,2], // 10-19
+        [2,2,1,2,3,1], [2,1,3,2,1,2], [2,2,3,1,1,2], [3,1,2,1,3,1], [3,1,1,2,2,2], [3,2,1,1,2,2], [3,2,1,2,2,1], [3,1,2,2,1,2], [3,2,2,1,1,2], [3,2,2,2,1,1], // 20-29
+        [2,1,2,1,2,3], [2,1,2,3,2,1], [2,3,2,1,2,1], [1,1,1,3,2,3], [1,3,1,1,2,3], [1,3,1,3,2,1], [1,1,2,3,1,3], [1,3,2,1,1,3], [1,3,2,3,1,1], [2,1,1,3,1,3], // 30-39
+        [2,3,1,1,1,3], [2,3,1,3,1,1], [1,1,2,1,3,3], [1,1,2,3,3,1], [1,3,2,1,3,1], [1,1,3,1,2,3], [1,1,3,3,2,1], [1,3,3,1,2,1], [3,1,3,1,2,1], [2,1,1,3,3,1], // 40-49
+        [2,3,1,1,3,1], [2,1,3,1,1,3], [2,1,3,3,1,1], [2,1,3,1,3,1], [3,1,1,1,2,3], [3,1,1,3,2,1], [3,3,1,1,2,1], [3,1,2,1,1,3], [3,1,2,3,1,1], [3,3,2,1,1,1], // 50-59
+        [3,1,4,1,1,1], [2,2,1,4,1,1], [4,3,1,1,1,1], [1,1,1,2,2,4], [1,1,1,4,2,2], [1,2,1,1,2,4], [1,2,1,4,2,1], [1,4,1,1,2,2], [1,4,1,2,2,1], [1,1,2,2,1,4], // 60-69
+        [1,1,2,4,1,2], [1,2,2,1,1,4], [1,2,2,4,1,1], [1,4,2,1,1,2], [1,4,2,2,1,1], [2,4,1,2,1,1], [2,2,1,1,1,4], [4,1,3,1,1,1], [2,4,1,1,1,2], [1,3,4,1,1,1], // 70-79
+        [1,1,1,2,4,2], [1,2,1,1,4,2], [1,2,1,2,4,1], [1,1,4,2,1,2], [1,2,4,1,1,2], [1,2,4,2,1,1], [4,1,1,2,1,2], [4,2,1,1,1,2], [4,2,1,2,1,1], [2,1,2,1,4,1], // 80-89
+        [2,1,4,1,2,1], [4,1,2,1,2,1], [1,1,1,1,4,3], [1,1,1,3,4,1], [1,3,1,1,4,1], [1,1,4,1,1,3], [1,1,4,3,1,1], [4,1,1,1,1,3], [4,1,1,3,1,1], [1,1,3,1,4,1], // 90-99
+        [1,1,4,1,3,1], [3,1,1,1,4,1], [4,1,1,1,3,1], [2,1,1,4,1,2], [2,1,1,2,1,4], [2,1,1,2,3,2], [2,3,3,1,1,1,2], [2,1,3,3,1,1,2], [2,1,1,3,3,1,2], [3,1,1,1,2,4], // 100-105
+        [3,1,1,4,2,1], [3,1,4,1,2,1], [4,1,1,1,2,3], [4,1,1,3,2,1], [4,3,1,1,2,1], [2,1,1,1,4,3], [2,1,1,3,4,1], [2,3,1,1,4,1], [1,1,4,1,2,3], [1,1,4,3,2,1], // 106-115 (stop, etc)
     ];
+
+    // Code128B: ASCII 32-127 maps to code set values 64-95
+    private static function charToCode128B($char): int
+    {
+        $ord = ord($char);
+        if ($ord < 32 || $ord > 127) {
+            throw new \InvalidArgumentException("Invalid character for Code128B: $char");
+        }
+        return $ord - 32;
+    }
 
     public function encode(string $data): Barcode
     {
         $bars = [];
-        // Start Code B (pattern for start, demo only)
-        $bars[] = [2, 'black']; $bars[] = [1, 'white'];
+        $codes = [];
+        // Start Code B (104)
+        $codes[] = 104;
+        // Data
         for ($i = 0; $i < strlen($data); $i++) {
-            $char = $data[$i];
-            if (!isset(self::$patterns[$char])) {
-                // Unknown char: fallback to a single bar
-                $bars[] = [2, 'black'];
-                $bars[] = [1, 'white'];
-            } else {
-                foreach (self::$patterns[$char] as $j => $width) {
-                    $bars[] = [$width, $j % 2 === 0 ? 'black' : 'white'];
-                }
+            $codes[] = self::charToCode128B($data[$i]);
+        }
+        // Checksum
+        $checksum = $codes[0];
+        for ($i = 1; $i < count($codes); $i++) {
+            $checksum += $codes[$i] * $i;
+        }
+        $checksum = $checksum % 103;
+        $codes[] = $checksum;
+        // Stop code (106)
+        $codes[] = 106;
+        // Convert codes to bars
+        foreach ($codes as $code) {
+            foreach (self::$patterns[$code] as $j => $width) {
+                $bars[] = [$width, $j % 2 === 0 ? 'black' : 'white'];
             }
         }
-        // Stop pattern (demo)
-        $bars[] = [2, 'black']; $bars[] = [3, 'white'];
+        // Add termination bar (always 2 black modules)
+        $bars[] = [2, 'black'];
         $width = 0;
         foreach ($bars as $bar) { $width += $bar[0]; }
         return new Barcode('Code128', $data, $bars, $width);
@@ -44,9 +67,10 @@ class Code128 implements BarcodeTypeInterface
 
     public function validate(string $data): bool
     {
-        // Only allow chars in the demo pattern set
-        foreach (str_split($data) as $char) {
-            if (!isset(self::$patterns[$char])) return false;
+        // Only allow ASCII 32-127
+        for ($i = 0; $i < strlen($data); $i++) {
+            $ord = ord($data[$i]);
+            if ($ord < 32 || $ord > 127) return false;
         }
         return true;
     }
