@@ -1,6 +1,6 @@
 {
   "name": "isahaq/barcode",
-  "description": "A universal barcode generator package supporting multiple barcode types and output formats, with extra features like batch generation, watermarking, validation, and CLI.",
+  "description": "A universal barcode generator package supporting multiple barcode types and output formats, with extra features like batch generation, watermarking, validation, CLI, and Laravel Facade support.",
   "type": "library",
   "license": "MIT",
   "keywords": [
@@ -23,7 +23,8 @@
   },
   "require": {
     "php": "^8.0",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "illuminate/support": "^8.0 || ^9.0 || ^10.0 || ^11.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0"
