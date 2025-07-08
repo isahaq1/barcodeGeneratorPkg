@@ -8,9 +8,24 @@ require_once __DIR__.'/../Utils/qrcode.php';
 
 class QRCode implements BarcodeTypeInterface
 {
-    public function encode(string $data): Barcode
+    /**
+     * Options:
+     * - 'version': QR version (1-10, default 1)
+     * - 'ecc': Error correction level ('L', 'M', 'Q', 'H', default 'L')
+     * - 'margin': Margin in modules (default 4)
+     */
+    public function encode(string $data, array $options = []): Barcode
     {
+        $version = isset($options['version']) ? (int)$options['version'] : 1;
+        $eccMap = ['L' => 1, 'M' => 0, 'Q' => 3, 'H' => 2];
+        $ecc = isset($options['ecc']) ? strtoupper($options['ecc']) : 'L';
+        $eccLevel = $eccMap[$ecc] ?? 1;
+        $margin = isset($options['margin']) ? (int)$options['margin'] : 4;
+
         $qr = \QRCodeGenerator::factory();
+        $qr->typeNumber = $version;
+        $qr->errorCorrectLevel = $eccLevel;
+        $qr->margin = $margin;
         $qr->addData($data);
         $qr->make();
         $size = $qr->getModuleCount();
