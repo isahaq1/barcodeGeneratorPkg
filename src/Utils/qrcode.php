@@ -524,6 +524,7 @@ class QRPolynomial {
         }
         for ($i = 0; $i < $this->getLength(); $i++) {
             for ($j = 0; $j < $e->getLength(); $j++) {
+                if ($this->get($i) == 0 || $e->get($j) == 0) continue; // skip zero coefficients
                 $num[$i + $j] ^= QRMath::gexp(QRMath::glog($this->get($i)) + QRMath::glog($e->get($j)));
             }
         }
@@ -534,12 +535,20 @@ class QRPolynomial {
         if ($this->getLength() - $e->getLength() < 0) {
             return $this;
         }
+        if ($this->get(0) == 0 || $e->get(0) == 0) {
+            // If leading coefficient is zero, skip to next
+            $num = $this->num;
+            array_shift($num);
+            $newPolynomial = new QRPolynomial($num, 0);
+            return $newPolynomial->mod($e);
+        }
         $ratio = QRMath::glog($this->get(0)) - QRMath::glog($e->get(0));
         $num = array();
         for ($i = 0; $i < $this->getLength(); $i++) {
             $num[$i] = $this->get($i);
         }
         for ($i = 0; $i < $e->getLength(); $i++) {
+            if ($e->get($i) == 0) continue; // skip zero coefficients
             $num[$i] ^= QRMath::gexp(QRMath::glog($e->get($i)) + $ratio);
         }
         $newPolynomial = new QRPolynomial($num, 0);
