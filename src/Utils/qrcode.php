@@ -207,6 +207,7 @@ class QRCodeGenerator {
                 case 1: return 9;
                 case 2: return 8;
                 case 3: return 8;
+                case 4: return 8; // 8-bit byte mode
                 default: throw new Exception("mode:" . $mode);
             }
         } elseif ($type < 27) {
@@ -215,6 +216,7 @@ class QRCodeGenerator {
                 case 1: return 11;
                 case 2: return 16;
                 case 3: return 10;
+                case 4: return 8; // 8-bit byte mode
                 default: throw new Exception("mode:" . $mode);
             }
         } elseif ($type < 41) {
@@ -223,6 +225,7 @@ class QRCodeGenerator {
                 case 1: return 13;
                 case 2: return 16;
                 case 3: return 12;
+                case 4: return 8; // 8-bit byte mode
                 default: throw new Exception("mode:" . $mode);
             }
         } else {
