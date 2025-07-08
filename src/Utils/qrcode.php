@@ -507,9 +507,13 @@ class QRPolynomial {
         for ($i = 0; $i < $shift; $i++) {
             $this->num[] = 0;
         }
+        if (count($this->num) == 0) {
+            $this->num = [0];
+        }
     }
 
     public function get($index) {
+        if ($index < 0 || $index >= count($this->num)) return 0;
         return $this->num[$index];
     }
 
@@ -539,6 +543,9 @@ class QRPolynomial {
             // If leading coefficient is zero, skip to next
             $num = $this->num;
             array_shift($num);
+            if (count($num) == 0) {
+                return new QRPolynomial([0], 0);
+            }
             $newPolynomial = new QRPolynomial($num, 0);
             return $newPolynomial->mod($e);
         }
