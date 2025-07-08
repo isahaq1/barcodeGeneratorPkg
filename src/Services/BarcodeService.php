@@ -43,6 +43,7 @@ class BarcodeService
     protected function resolveType(string $type): object
     {
         return match (strtolower($type)) {
+            'qrcode' => new \Isahaq\Barcode\Types\QRCode(),
             'code128' => new Code128(),
             'code128a' => new Code128A(),
             'code128b' => new Code128B(),
