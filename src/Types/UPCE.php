@@ -92,7 +92,7 @@ class UPCE implements BarcodeTypeInterface
 
     public function validate(string $data): bool
     {
-        if (!preg_match('/^\d{8}$/', $data)) return false;
+        if (!preg_match('/^\d{6,8}$/', $data)) return false;
         $upca = self::expandToUPCA(substr($data, 0, 6));
         $expected = UPCA::calculateChecksum(substr($upca, 0, 11));
         return $data[7] === $expected;
