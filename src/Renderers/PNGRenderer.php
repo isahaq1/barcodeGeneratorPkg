@@ -24,15 +24,9 @@ class PNGRenderer implements RendererInterface
         $bars = $barcode->bars;
         $fg = $this->foregroundColor;
         $bg = $this->backgroundColor;
-        $margin = isset($options['margin']) ? (int)$options['margin'] : 20;
-        $fontSize = isset($options['font_size']) ? (int)$options['font_size'] : 5;
-        if ($fontSize < 1 || $fontSize > 5) {
-            $fontSize = 5;
-        }
-        $text = isset($options['text']) && $options['text'] !== '' ? $options['text'] : $barcode->data;
-        if (!$text) {
-            $text = ' ';
-        }
+        $margin = $options['margin'] ?? 20;
+        $fontSize = $options['font_size'] ?? 5;
+        $text = $options['text'] ?? $barcode->data ?: ' ';
 
         // --- QRCode 2D rendering branch FIRST ---
         if ($barcode->type === 'QRCode') {
@@ -72,16 +66,15 @@ class PNGRenderer implements RendererInterface
         }
         // --- end QRCode branch ---
 
-        $widthFactor = isset($options['width']) ? max(2, (int)$options['width']) : 3; // Default to 3, min 2 for bold bars
-        $height = isset($options['height']) ? (int)$options['height'] : 50;
-
+        // --- 1D barcode rendering for all other types ---
+        $widthFactor = $options['width'] ?? 3;
+        $height = $options['height'] ?? 50;
         $totalWidth = 0;
         foreach ($bars as $bar) {
             $totalWidth += $bar[0] * $widthFactor;
         }
         $imageWidth = $totalWidth + 2 * $margin;
-        $imageHeight = $height + $margin + 20; // extra for text
-
+        $imageHeight = $height + $margin + 20;
         $im = imagecreatetruecolor($imageWidth, $imageHeight);
         $bgColor = imagecolorallocate($im, $bg[0], $bg[1], $bg[2]);
         $fgColor = imagecolorallocate($im, $fg[0], $fg[1], $fg[2]);
@@ -95,7 +88,6 @@ class PNGRenderer implements RendererInterface
             }
             $x += $barWidth;
         }
-
         // Draw text below barcode, centered
         $textBoxWidth = imagefontwidth($fontSize) * strlen($text);
         $textX = ($imageWidth - $textBoxWidth) / 2;
