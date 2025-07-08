@@ -516,25 +516,11 @@ class QRPolynomial {
 class QRMath {
     private static $glog = array();
     private static $gexp = array();
+    private static $initialized = false;
 
-    public static function glog($n) {
-        if ($n < 1) {
-            throw new Exception("glog(" . $n . ")");
-        }
-        return self::$glog[$n];
-    }
-
-    public static function gexp($n) {
-        while ($n < 0) {
-            $n += 255;
-        }
-        while ($n >= 256) {
-            $n -= 255;
-        }
-        return self::$gexp[$n];
-    }
-
-    static {
+    private static function init() {
+        if (self::$initialized) return;
+        
         for ($i = 0; $i < 8; $i++) {
             self::$glog[$i] = 0;
         }
@@ -547,6 +533,27 @@ class QRMath {
         for ($i = 255; $i < 512; $i++) {
             self::$gexp[$i] = self::$gexp[$i - 255];
         }
+        
+        self::$initialized = true;
+    }
+
+    public static function glog($n) {
+        self::init();
+        if ($n < 1) {
+            throw new Exception("glog(" . $n . ")");
+        }
+        return self::$glog[$n];
+    }
+
+    public static function gexp($n) {
+        self::init();
+        while ($n < 0) {
+            $n += 255;
+        }
+        while ($n >= 256) {
+            $n -= 255;
+        }
+        return self::$gexp[$n];
     }
 }
 
