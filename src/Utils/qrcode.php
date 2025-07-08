@@ -40,6 +40,10 @@ class QRCodeGenerator {
     private function setupPositionProbePattern($row, $col) {
         // In a real implementation, this would place the finder pattern at ($row, $col)
     }
+    // Add a stub for setupTimingPattern
+    private function setupTimingPattern() {
+        // In a real implementation, this would place the timing patterns in the QR matrix
+    }
     // --- Real QR code logic below ---
     private function makeImpl($test, $maskPattern) {
         $this->moduleCount = $this->typeNumber * 4 + 17;
