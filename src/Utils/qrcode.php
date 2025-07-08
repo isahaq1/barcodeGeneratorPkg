@@ -15,7 +15,7 @@ class QRCodeGenerator {
     }
 
     public function addData($data) {
-        $this->dataList[] = new QR8bitByte($data);
+        $this->dataList[] = \QRDataSegment::make($data);
         $this->dataCache = null;
     }
 
@@ -249,29 +249,26 @@ class QRCodeGenerator {
     private function getLengthInBits($mode, $type) {
         if (1 <= $type && $type < 10) {
             switch ($mode) {
-                case 0: return 10;
-                case 1: return 9;
-                case 2: return 8;
-                case 3: return 8;
-                case 4: return 8; // 8-bit byte mode
+                case 1: return 10; // Numeric
+                case 2: return 9;  // Alphanumeric
+                case 4: return 8;  // Byte
+                case 8: return 8;  // Kanji (should be 8 or 13, see QR spec)
                 default: throw new Exception("mode:" . $mode);
             }
         } elseif ($type < 27) {
             switch ($mode) {
-                case 0: return 12;
-                case 1: return 11;
-                case 2: return 16;
-                case 3: return 10;
-                case 4: return 8; // 8-bit byte mode
+                case 1: return 12;
+                case 2: return 11;
+                case 4: return 16;
+                case 8: return 10;
                 default: throw new Exception("mode:" . $mode);
             }
         } elseif ($type < 41) {
             switch ($mode) {
-                case 0: return 14;
-                case 1: return 13;
-                case 2: return 16;
-                case 3: return 12;
-                case 4: return 8; // 8-bit byte mode
+                case 1: return 14;
+                case 2: return 13;
+                case 4: return 16;
+                case 8: return 12;
                 default: throw new Exception("mode:" . $mode);
             }
         } else {
