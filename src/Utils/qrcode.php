@@ -20,7 +20,38 @@ class QRCodeGenerator {
     }
 
     public function make() {
+        // Auto-select appropriate QR version based on data length
+        $this->selectVersion();
         $this->makeImpl(false, $this->getBestMaskPattern());
+    }
+
+    private function selectVersion() {
+        // Calculate required capacity
+        $dataLength = 0;
+        foreach ($this->dataList as $data) {
+            $dataLength += strlen($data->data);
+        }
+        
+        // Estimate bits needed (4 bits mode + 8 bits length + 8 bits per byte)
+        $estimatedBits = 4 + 8 + ($dataLength * 8);
+        
+        // Find appropriate version
+        for ($version = 1; $version <= 10; $version++) {
+            $capacity = $this->getCapacity($version, $this->errorCorrectLevel);
+            if ($estimatedBits <= $capacity) {
+                $this->typeNumber = $version;
+                return;
+            }
+        }
+        
+        // If we get here, use version 10 (maximum supported)
+        $this->typeNumber = 10;
+    }
+
+    private function getCapacity($version, $errorLevel) {
+        // Simplified capacity calculation
+        $baseCapacity = 26; // Version 1, Level L
+        return $baseCapacity * $version * (1 - ($errorLevel * 0.25));
     }
 
     public function getModuleCount() {
