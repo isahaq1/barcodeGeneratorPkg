@@ -22,20 +22,58 @@ class PNGRenderer implements RendererInterface
     public function render(Barcode $barcode, array $options = []): string
     {
         $bars = $barcode->bars;
-        $widthFactor = isset($options['width']) ? max(2, (int)$options['width']) : 3; // Default to 3, min 2 for bold bars
-        $height = isset($options['height']) ? (int)$options['height'] : 50;
         $fg = $this->foregroundColor;
         $bg = $this->backgroundColor;
-
         $margin = isset($options['margin']) ? (int)$options['margin'] : 20;
         $fontSize = isset($options['font_size']) ? (int)$options['font_size'] : 5;
         if ($fontSize < 1 || $fontSize > 5) {
-            $fontSize = 5; // fallback to max allowed by GD
+            $fontSize = 5;
         }
         $text = isset($options['text']) && $options['text'] !== '' ? $options['text'] : $barcode->data;
         if (!$text) {
-            $text = ' '; // Always render something to avoid skipping imagestring
+            $text = ' ';
         }
+
+        // --- QRCode 2D rendering branch FIRST ---
+        if ($barcode->type === 'QRCode') {
+            $size = (int)sqrt(count($bars));
+            $moduleSize = $options['module_size'] ?? 8;
+            $imageWidth = $size * $moduleSize + 2 * $margin;
+            $imageHeight = $size * $moduleSize + 2 * $margin + 20;
+            $im = imagecreatetruecolor($imageWidth, $imageHeight);
+            $bgColor = imagecolorallocate($im, $bg[0], $bg[1], $bg[2]);
+            $fgColor = imagecolorallocate($im, $fg[0], $fg[1], $fg[2]);
+            imagefill($im, 0, 0, $bgColor);
+            for ($y = 0; $y < $size; $y++) {
+                for ($x = 0; $x < $size; $x++) {
+                    $idx = $y * $size + $x;
+                    if ($bars[$idx][1] === 'black') {
+                        imagefilledrectangle(
+                            $im,
+                            $margin + $x * $moduleSize,
+                            $margin + $y * $moduleSize,
+                            $margin + ($x + 1) * $moduleSize - 1,
+                            $margin + ($y + 1) * $moduleSize - 1,
+                            $fgColor
+                        );
+                    }
+                }
+            }
+            // Draw text below QR code, centered
+            $textBoxWidth = imagefontwidth($fontSize) * strlen($text);
+            $textX = ($imageWidth - $textBoxWidth) / 2;
+            $textY = $margin + $size * $moduleSize + 2;
+            imagestring($im, $fontSize, $textX, $textY, $text, $fgColor);
+            ob_start();
+            imagepng($im);
+            $pngData = ob_get_clean();
+            imagedestroy($im);
+            return $pngData;
+        }
+        // --- end QRCode branch ---
+
+        $widthFactor = isset($options['width']) ? max(2, (int)$options['width']) : 3; // Default to 3, min 2 for bold bars
+        $height = isset($options['height']) ? (int)$options['height'] : 50;
 
         $totalWidth = 0;
         foreach ($bars as $bar) {
