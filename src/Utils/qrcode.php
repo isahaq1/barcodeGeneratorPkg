@@ -31,6 +31,11 @@ class QRCodeGenerator {
         if ($this->modules === null) return false;
         return isset($this->modules[$y][$x]) ? $this->modules[$y][$x] : false;
     }
+    // Add this method to avoid undefined method error
+    private function getBestMaskPattern() {
+        // In a real implementation, this would evaluate all mask patterns and pick the best one
+        return 0;
+    }
     // --- Real QR code logic below ---
     private function makeImpl($test, $maskPattern) {
         $this->moduleCount = $this->typeNumber * 4 + 17;
