@@ -23,8 +23,15 @@ class QRCode implements BarcodeTypeInterface
         $margin = isset($options['margin']) ? (int)$options['margin'] : 4;
 
         $qr = \QRCodeGenerator::factory();
-        $qr->typeNumber = $version;
-        $qr->errorCorrectLevel = $eccLevel;
+        // Set typeNumber (version) via reflection
+        $ref = new \ReflectionClass($qr);
+        $propType = $ref->getProperty('typeNumber');
+        $propType->setAccessible(true);
+        $propType->setValue($qr, $version);
+        // Set errorCorrectLevel via reflection
+        $propEcc = $ref->getProperty('errorCorrectLevel');
+        $propEcc->setAccessible(true);
+        $propEcc->setValue($qr, $eccLevel);
         $qr->margin = $margin;
         $qr->addData($data);
         $qr->make();
