@@ -92,6 +92,13 @@ class BarcodeService
 
     public function make(string $type, string $format, string $data, array $options = []): string
     {
+        if (strtolower($type) === 'qrcode') {
+            // Use the new SimpleQRCode generator
+            $version = $options['version'] ?? 2;
+            $margin = $options['margin'] ?? 4;
+            $moduleSize = $options['module_size'] ?? 8;
+            return \Isahaq\Barcode\Utils\SimpleQRCode::png($data, $version, $margin, $moduleSize);
+        }
         $barcodeType = $this->resolveType($type);
         $barcode = $barcodeType->encode($data);
         $renderer = $this->resolveRenderer($format);
