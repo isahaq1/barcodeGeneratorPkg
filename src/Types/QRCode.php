@@ -39,7 +39,9 @@ class QRCode implements BarcodeTypeInterface
         $bars = [];
         for ($y = 0; $y < $size; $y++) {
             for ($x = 0; $x < $size; $x++) {
-                $bars[] = [1, $qr->isDark($x, $y) ? 'black' : 'white'];
+                if ($qr->isDark($x, $y)) {
+                    $bars[] = [$x, $y];
+                }
             }
         }
         $width = $size * $size;
