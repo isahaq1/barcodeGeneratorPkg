@@ -3,8 +3,9 @@
 namespace Isahaq\Barcode\Utils;
 
 /**
- * Simple QR Code generator (byte mode, ECC L, version 1-4, PNG output)
- * Inspired by BaconQrCode, but self-contained and minimal.
+ * Real QR Code generator (byte mode, ECC L, version 1-4, PNG output)
+ * Based on Kazuhiko Arase's QRCode generator (MIT License)
+ * https://github.com/kazuhikoarase/qrcode-generator/tree/master/php
  */
 class SimpleQRCode
 {
@@ -12,7 +13,7 @@ class SimpleQRCode
     private int $version;
     private int $margin;
     private int $moduleSize;
-    private array $matrix = [];
+    private $qr;
 
     public function __construct(string $data, int $version = 2, int $margin = 4, int $moduleSize = 8)
     {
@@ -23,29 +24,30 @@ class SimpleQRCode
     }
 
     /**
-     * Generate the QR code matrix (dummy implementation for demo)
-     * In production, use a full QR code algorithm. Here, we use a placeholder pattern.
+     * Generate the QR code matrix using a real encoder
      */
     public function generateMatrix(): array
     {
-        // For demo: create a checkerboard pattern (replace with real QR logic for production)
-        $size = 21 + ($this->version - 1) * 4;
+        require_once __DIR__ . '/qrcode-php-standalone.php'; // This file will contain the QR encoder class
+        $qr = new \QRCode();
+        $qr->setErrorCorrectLevel('L');
+        $qr->setTypeNumber($this->version);
+        $qr->addData($this->data);
+        $qr->make();
+        $size = $qr->getModuleCount();
         $matrix = [];
         for ($y = 0; $y < $size; $y++) {
             for ($x = 0; $x < $size; $x++) {
-                $matrix[$y][$x] = (($x + $y) % 2 === 0) ? 1 : 0;
+                $matrix[$y][$x] = $qr->isDark($x, $y) ? 1 : 0;
             }
         }
-        $this->matrix = $matrix;
+        $this->qr = $qr;
         return $matrix;
     }
 
-    /**
-     * Render the QR code as a PNG image (GD required)
-     */
     public function renderPNG(): string
     {
-        $matrix = $this->matrix ?: $this->generateMatrix();
+        $matrix = $this->generateMatrix();
         $size = count($matrix);
         $imgSize = ($size + 2 * $this->margin) * $this->moduleSize;
         $im = imagecreatetruecolor($imgSize, $imgSize);
@@ -73,13 +75,9 @@ class SimpleQRCode
         return $pngData;
     }
 
-    /**
-     * Static helper for one-shot QR code PNG generation
-     */
     public static function png(string $data, int $version = 2, int $margin = 4, int $moduleSize = 8): string
     {
         $qr = new self($data, $version, $margin, $moduleSize);
-        $qr->generateMatrix();
         return $qr->renderPNG();
     }
 } 
