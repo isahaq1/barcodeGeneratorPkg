@@ -186,7 +186,7 @@ private function getMimeType($format)
 
 ```php
 <img src="data:image/png;base64,{{ base64_encode(Barcode::png('1234567890')) }}" alt="Barcode">
-<img src="{{ Barcode::modernQr(['data' => 'https://example.com'])->getDataUri() }}" alt="QR Code">
+<img src="data:image/png;base64,{{ base64_encode(Barcode::modernQr(['data' => 'https://example.com'])) }}" alt="QR Code">
 // routes/web.php
 Route::get('/barcode/{data}', function ($data) {
     $barcode = Barcode::png($data, 'code128');
