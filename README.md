@@ -107,6 +107,38 @@ $result = $renderer->render($barcode);
 file_put_contents('barcode.png', $result);
 ```
 
+### Display Barcode as Base64 Image (PNG)
+
+```php
+// ... after generating $barcode (PNG data)
+$barcodeImage = base64_encode($barcode);
+echo '<img src="data:image/png;base64,' . $barcodeImage . '" alt="Barcode" />';
+```
+
+### QR Code with Logo and Watermark
+
+```php
+use Isahaq\Barcode\QrCodeBuilder;
+
+$qrCode = QrCodeBuilder::create()
+    ->data('https://example.com')
+    ->size(300)
+    ->margin(10)
+    ->foregroundColor([0, 0, 0])
+    ->backgroundColor([255, 255, 255])
+    ->logoPath('path/to/logo.png') // Logo in the center
+    ->label('Scan me!')            // Watermark or label below
+    ->labelFont('path/to/font.ttf', 16)
+    ->format('png')
+    ->build();
+
+// Save to file
+$qrCode->saveToFile('qr-code-with-logo.png');
+
+// Display as base64 image
+echo '<img src="data:image/png;base64,' . base64_encode($qrCode->getString()) . '" alt="QR Code with Logo and Watermark" />';
+```
+
 ### Using the Service Class
 
 ```php
@@ -207,68 +239,4 @@ php vendor/bin/generate.php --data="1234567890" --type="ean13" --format="svg" --
 - **Batch Generation**
 - **Custom Renderer Options**
 - **Validation**
-- **Auto-detection**: Use `code128auto`, `code39auto`, `code25auto`, `interleaved25auto`, `msiauto` for smart type selection
-
-## 🔧 Configuration
-
-### Laravel Configuration (Optional)
-
-Create a config file `config/barcode.php`:
-
-```php
-return [
-    'default_type' => 'code128',
-    'default_format' => 'png',
-    'default_options' => [
-        'width' => 300,
-        'height' => 100,
-        'foreground_color' => [0, 0, 0],
-        'background_color' => [255, 255, 255],
-        'margin' => 10,
-    ],
-    'qr_code' => [
-        'default_size' => 300,
-        'default_margin' => 10,
-        'error_correction' => 'L',
-    ],
-];
-```
-
-## 🧪 Testing
-
-```bash
-vendor/bin/phpunit
-composer test
-```
-
-## 📝 Examples
-
-- **E-commerce Product Barcode**
-- **QR Code for Contact Information**
-- **Shipping Label Barcode**
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This package is open-sourced software licensed under the [MIT license](LICENSE).
-
-## 👨‍💻 Author
-
-**Isahaq** - [hmisahaq01@gmail.com](mailto:hmisahaq01@gmail.com)
-
-## 🙏 Acknowledgments
-
-- Inspired by various barcode generation libraries
-- Built with modern PHP 8.0+ features
-- Laravel integration for seamless framework usage
-
----
-
-**Happy Barcode Generating! 🎉**
+- **Auto-detection**: Use `code128auto`, `code39auto`, `code25auto`, `interleaved25auto`, `
