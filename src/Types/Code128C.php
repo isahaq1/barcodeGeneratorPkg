@@ -4,9 +4,9 @@ namespace Isahaq\Barcode\Types;
 
 use Isahaq\Barcode\Barcode;
 
-class Code128 implements BarcodeTypeInterface
+class Code128C implements BarcodeTypeInterface
 {
-    // Code128 patterns for ASCII 32-127, plus start/stop/checksum
+    // Code128C patterns for numeric pairs, plus start/stop/checksum
     private static array $patterns = [
         // 0-105: bar/space widths for each symbol (6 elements each)
         [2,1,2,2,2,2], [2,2,2,1,2,2], [2,2,2,2,2,1], [1,2,1,2,2,3], [1,2,1,3,2,2], [1,3,1,2,2,2], [1,2,2,2,1,3], [1,2,2,3,1,2], [1,3,2,2,1,2], [2,2,1,2,1,3], // 0-9
@@ -23,26 +23,33 @@ class Code128 implements BarcodeTypeInterface
         [3,1,1,4,2,1], [3,1,4,1,2,1], [4,1,1,1,2,3], [4,1,1,3,2,1], [4,3,1,1,2,1], [2,1,1,1,4,3], [2,1,1,3,4,1], [2,3,1,1,4,1], [1,1,4,1,2,3], [1,1,4,3,2,1], // 106-115 (stop, etc)
     ];
 
-    // Code128B: ASCII 32-127 maps to code set values 64-95
-    private static function charToCode128B($char): int
+    // Code128C: Convert numeric pairs to code values
+    private static function numericPairToCode(string $pair): int
     {
-        $ord = ord($char);
-        if ($ord < 32 || $ord > 127) {
-            throw new \InvalidArgumentException("Invalid character for Code128B: $char");
+        if (strlen($pair) !== 2 || !ctype_digit($pair)) {
+            throw new \InvalidArgumentException("Invalid numeric pair for Code128C: $pair");
         }
-        return $ord - 32;
+        return (int)$pair;
     }
 
     public function encode(string $data): Barcode
     {
+        // Ensure even number of digits
+        if (strlen($data) % 2 !== 0) {
+            $data = '0' . $data; // Pad with leading zero
+        }
+
         $bars = [];
         $codes = [];
-        // Start Code B (104)
-        $codes[] = 104;
-        // Data
-        for ($i = 0; $i < strlen($data); $i++) {
-            $codes[] = self::charToCode128B($data[$i]);
+        // Start Code C (105)
+        $codes[] = 105;
+        
+        // Process data in pairs
+        for ($i = 0; $i < strlen($data); $i += 2) {
+            $pair = substr($data, $i, 2);
+            $codes[] = self::numericPairToCode($pair);
         }
+        
         // Checksum
         $checksum = $codes[0];
         for ($i = 1; $i < count($codes); $i++) {
@@ -52,6 +59,7 @@ class Code128 implements BarcodeTypeInterface
         $codes[] = $checksum;
         // Stop code (106)
         $codes[] = 106;
+        
         // Convert codes to bars
         foreach ($codes as $code) {
             foreach (self::$patterns[$code] as $j => $width) {
@@ -62,16 +70,12 @@ class Code128 implements BarcodeTypeInterface
         $bars[] = [2, 'black'];
         $width = 0;
         foreach ($bars as $bar) { $width += $bar[0]; }
-        return new Barcode('Code128', $data, $bars, $width);
+        return new Barcode('Code128C', $data, $bars, $width);
     }
 
     public function validate(string $data): bool
     {
-        // Only allow ASCII 32-127
-        for ($i = 0; $i < strlen($data); $i++) {
-            $ord = ord($data[$i]);
-            if ($ord < 32 || $ord > 127) return false;
-        }
-        return true;
+        // Only allow digits
+        return ctype_digit($data);
     }
 } 

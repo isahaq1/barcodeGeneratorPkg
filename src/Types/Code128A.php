@@ -4,9 +4,9 @@ namespace Isahaq\Barcode\Types;
 
 use Isahaq\Barcode\Barcode;
 
-class Code128 implements BarcodeTypeInterface
+class Code128A implements BarcodeTypeInterface
 {
-    // Code128 patterns for ASCII 32-127, plus start/stop/checksum
+    // Code128A patterns for ASCII 0-95, plus start/stop/checksum
     private static array $patterns = [
         // 0-105: bar/space widths for each symbol (6 elements each)
         [2,1,2,2,2,2], [2,2,2,1,2,2], [2,2,2,2,2,1], [1,2,1,2,2,3], [1,2,1,3,2,2], [1,3,1,2,2,2], [1,2,2,2,1,3], [1,2,2,3,1,2], [1,3,2,2,1,2], [2,2,1,2,1,3], // 0-9
@@ -23,25 +23,25 @@ class Code128 implements BarcodeTypeInterface
         [3,1,1,4,2,1], [3,1,4,1,2,1], [4,1,1,1,2,3], [4,1,1,3,2,1], [4,3,1,1,2,1], [2,1,1,1,4,3], [2,1,1,3,4,1], [2,3,1,1,4,1], [1,1,4,1,2,3], [1,1,4,3,2,1], // 106-115 (stop, etc)
     ];
 
-    // Code128B: ASCII 32-127 maps to code set values 64-95
-    private static function charToCode128B($char): int
+    // Code128A: ASCII 0-95 maps to code set values 0-95
+    private static function charToCode128A($char): int
     {
         $ord = ord($char);
-        if ($ord < 32 || $ord > 127) {
-            throw new \InvalidArgumentException("Invalid character for Code128B: $char");
+        if ($ord < 0 || $ord > 95) {
+            throw new \InvalidArgumentException("Invalid character for Code128A: $char");
         }
-        return $ord - 32;
+        return $ord;
     }
 
     public function encode(string $data): Barcode
     {
         $bars = [];
         $codes = [];
-        // Start Code B (104)
-        $codes[] = 104;
+        // Start Code A (103)
+        $codes[] = 103;
         // Data
         for ($i = 0; $i < strlen($data); $i++) {
-            $codes[] = self::charToCode128B($data[$i]);
+            $codes[] = self::charToCode128A($data[$i]);
         }
         // Checksum
         $checksum = $codes[0];
@@ -62,15 +62,15 @@ class Code128 implements BarcodeTypeInterface
         $bars[] = [2, 'black'];
         $width = 0;
         foreach ($bars as $bar) { $width += $bar[0]; }
-        return new Barcode('Code128', $data, $bars, $width);
+        return new Barcode('Code128A', $data, $bars, $width);
     }
 
     public function validate(string $data): bool
     {
-        // Only allow ASCII 32-127
+        // Only allow ASCII 0-95
         for ($i = 0; $i < strlen($data); $i++) {
             $ord = ord($data[$i]);
-            if ($ord < 32 || $ord > 127) return false;
+            if ($ord < 0 || $ord > 95) return false;
         }
         return true;
     }

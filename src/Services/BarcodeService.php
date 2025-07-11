@@ -3,18 +3,24 @@
 namespace Isahaq\Barcode\Services;
 
 use Isahaq\Barcode\Types\Code128;
+use Isahaq\Barcode\Types\Code128A;
+use Isahaq\Barcode\Types\Code128B;
+use Isahaq\Barcode\Types\Code128C;
+use Isahaq\Barcode\Types\Code128Auto;
 use Isahaq\Barcode\Types\Code39;
 use Isahaq\Barcode\Types\Code39Checksum;
 use Isahaq\Barcode\Types\Code39E;
 use Isahaq\Barcode\Types\Code39EChecksum;
+use Isahaq\Barcode\Types\Code39Auto;
 use Isahaq\Barcode\Types\Code93;
+use Isahaq\Barcode\Types\Code25;
+use Isahaq\Barcode\Types\Code25Auto;
+use Isahaq\Barcode\Types\Code32;
 use Isahaq\Barcode\Types\Standard25;
 use Isahaq\Barcode\Types\Standard25Checksum;
 use Isahaq\Barcode\Types\Interleaved25;
 use Isahaq\Barcode\Types\Interleaved25Checksum;
-use Isahaq\Barcode\Types\Code128A;
-use Isahaq\Barcode\Types\Code128B;
-use Isahaq\Barcode\Types\Code128C;
+use Isahaq\Barcode\Types\Interleaved25Auto;
 use Isahaq\Barcode\Types\EAN2;
 use Isahaq\Barcode\Types\EAN5;
 use Isahaq\Barcode\Types\EAN8;
@@ -24,6 +30,7 @@ use Isahaq\Barcode\Types\UPCA;
 use Isahaq\Barcode\Types\UPCE;
 use Isahaq\Barcode\Types\MSI;
 use Isahaq\Barcode\Types\MSIChecksum;
+use Isahaq\Barcode\Types\MSIAuto;
 use Isahaq\Barcode\Types\POSTNET;
 use Isahaq\Barcode\Types\PLANET;
 use Isahaq\Barcode\Types\RMS4CC;
@@ -33,6 +40,14 @@ use Isahaq\Barcode\Types\Codabar;
 use Isahaq\Barcode\Types\Code11;
 use Isahaq\Barcode\Types\PharmaCode;
 use Isahaq\Barcode\Types\PharmaCodeTwoTracks;
+use Isahaq\Barcode\Types\QRCode;
+use Isahaq\Barcode\Types\DataMatrix;
+use Isahaq\Barcode\Types\Aztec;
+use Isahaq\Barcode\Types\PDF417;
+use Isahaq\Barcode\Types\MicroQR;
+use Isahaq\Barcode\Types\Maxicode;
+use Isahaq\Barcode\Types\Code16K;
+use Isahaq\Barcode\Types\Code49;
 use Isahaq\Barcode\Renderers\PNGRenderer;
 use Isahaq\Barcode\Renderers\SVGRenderer;
 use Isahaq\Barcode\Renderers\HTMLRenderer;
@@ -43,20 +58,33 @@ class BarcodeService
     protected function resolveType(string $type): object
     {
         return match (strtolower($type)) {
-            'qrcode' => new \Isahaq\Barcode\Types\QRCode(),
+            'qrcode' => new QRCode(),
+            'datamatrix' => new DataMatrix(),
+            'aztec' => new Aztec(),
+            'pdf417' => new PDF417(),
+            'microqr' => new MicroQR(),
+            'maxicode' => new Maxicode(),
+            'code16k' => new Code16K(),
+            'code49' => new Code49(),
             'code128' => new Code128(),
             'code128a' => new Code128A(),
             'code128b' => new Code128B(),
             'code128c' => new Code128C(),
+            'code128auto' => new Code128Auto(),
             'code39' => new Code39(),
             'code39checksum' => new Code39Checksum(),
             'code39e' => new Code39E(),
             'code39echecksum' => new Code39EChecksum(),
+            'code39auto' => new Code39Auto(),
             'code93' => new Code93(),
+            'code25' => new Code25(),
+            'code25auto' => new Code25Auto(),
+            'code32' => new Code32(),
             'standard25' => new Standard25(),
             'standard25checksum' => new Standard25Checksum(),
             'interleaved25' => new Interleaved25(),
             'interleaved25checksum' => new Interleaved25Checksum(),
+            'interleaved25auto' => new Interleaved25Auto(),
             'ean2' => new EAN2(),
             'ean5' => new EAN5(),
             'ean8' => new EAN8(),
@@ -66,6 +94,7 @@ class BarcodeService
             'upce' => new UPCE(),
             'msi' => new MSI(),
             'msichecksum' => new MSIChecksum(),
+            'msiauto' => new MSIAuto(),
             'postnet' => new POSTNET(),
             'planet' => new PLANET(),
             'rms4cc' => new RMS4CC(),

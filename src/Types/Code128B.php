@@ -4,9 +4,9 @@ namespace Isahaq\Barcode\Types;
 
 use Isahaq\Barcode\Barcode;
 
-class Code128 implements BarcodeTypeInterface
+class Code128B implements BarcodeTypeInterface
 {
-    // Code128 patterns for ASCII 32-127, plus start/stop/checksum
+    // Code128B patterns for ASCII 32-127, plus start/stop/checksum
     private static array $patterns = [
         // 0-105: bar/space widths for each symbol (6 elements each)
         [2,1,2,2,2,2], [2,2,2,1,2,2], [2,2,2,2,2,1], [1,2,1,2,2,3], [1,2,1,3,2,2], [1,3,1,2,2,2], [1,2,2,2,1,3], [1,2,2,3,1,2], [1,3,2,2,1,2], [2,2,1,2,1,3], // 0-9
@@ -62,7 +62,7 @@ class Code128 implements BarcodeTypeInterface
         $bars[] = [2, 'black'];
         $width = 0;
         foreach ($bars as $bar) { $width += $bar[0]; }
-        return new Barcode('Code128', $data, $bars, $width);
+        return new Barcode('Code128B', $data, $bars, $width);
     }
 
     public function validate(string $data): bool
