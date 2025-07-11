@@ -413,7 +413,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 
 ## 👨‍💻 Author
 
-**Isahaq** - [isahaq01@gmail.com](mailto:isahaq01@gmail.com)
+**Isahaq** - [hmisahaq01@gmail.com](mailto:hmisahaq01@gmail.com)
 
 ## 🙏 Acknowledgments
 
