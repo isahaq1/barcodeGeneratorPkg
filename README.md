@@ -199,9 +199,9 @@ $qrWithLogo = Barcode::qrWithLogo([
     'size' => 300,
     'margin' => 10,
     'logoPath' => 'path/to/logo.png',
+    'logoSize' => 60, // Logo size as percentage (default: 60)
     'label' => 'Scan me!',
-    'labelFont' => 'path/to/font.ttf',
-    'labelFontSize' => 16
+    'error_correction' => 'H' // Use H for better logo support
 ]);
 return response($qrWithLogo)->header('Content-Type', 'image/png');
 ```
@@ -239,7 +239,9 @@ private function getMimeType($format)
 <!-- QR Code with Logo -->
 <img src="data:image/png;base64,{{ base64_encode(Barcode::qrWithLogo([
     'data' => 'https://example.com',
-    'logoPath' => 'http://127.0.0.1:8000/assets/images/logo-dark.png'
+    'logoPath' => 'http://127.0.0.1:8000/assets/images/logo-dark.png',
+    'logoSize' => 60,
+    'error_correction' => 'H'
 ])) }}" alt="QR Code with Logo">
 // routes/web.php
 Route::get('/barcode/{data}', function ($data) {

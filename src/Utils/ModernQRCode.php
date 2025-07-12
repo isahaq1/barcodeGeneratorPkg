@@ -11,6 +11,8 @@ class ModernQRCode
     private array $foregroundColor = [0, 0, 0];
     private array $backgroundColor = [255, 255, 255];
     private ?string $label = null;
+    private ?string $logoPath = null;
+    private int $logoSize = 60; // Logo size as percentage of QR code
 
     public function setData(string $data): self
     {
@@ -54,30 +56,50 @@ class ModernQRCode
         return $this;
     }
 
+    public function setLogo(string $logoPath, int $logoSize = 60): self
+    {
+        $this->logoPath = $logoPath;
+        $this->logoSize = $logoSize;
+        return $this;
+    }
+
     public function writeString(): string
     {
         require_once __DIR__ . '/phpqrcode.php';
+        
+        // Use higher error correction when logo is present
+        $errorLevel = $this->logoPath ? 'H' : $this->errorCorrection;
+        
         // Generate a base QR code image
         ob_start();
-        \QRcode::png($this->data, null, constant('QR_ECLEVEL_' . $this->errorCorrection), 1, $this->margin, false, false);
+        \QRcode::png($this->data, null, constant('QR_ECLEVEL_' . $errorLevel), 1, $this->margin, false, false);
         $rawPng = ob_get_clean();
         $srcIm = imagecreatefromstring($rawPng);
         $srcW = imagesx($srcIm);
         $srcH = imagesy($srcIm);
         $moduleSize = max(1, intval($this->size / max($srcW, $srcH)));
+        
         // Generate QR with correct module size
         ob_start();
-        \QRcode::png($this->data, null, constant('QR_ECLEVEL_' . $this->errorCorrection), $moduleSize, $this->margin, false, false);
+        \QRcode::png($this->data, null, constant('QR_ECLEVEL_' . $errorLevel), $moduleSize, $this->margin, false, false);
         $pngData = ob_get_clean();
         $im = imagecreatefromstring($pngData);
+        
         // Recolor if needed
         if ($this->foregroundColor !== [0,0,0] || $this->backgroundColor !== [255,255,255]) {
             $im = $this->recolor($im, $this->foregroundColor, $this->backgroundColor);
         }
+        
+        // Add logo if provided
+        if ($this->logoPath) {
+            $im = $this->addLogo($im, $this->logoPath, $this->logoSize);
+        }
+        
         // Add label if needed
         if ($this->label) {
             $im = $this->addLabel($im, $this->label, $this->size);
         }
+        
         ob_start();
         imagepng($im);
         $finalPng = ob_get_clean();
@@ -116,6 +138,53 @@ class ModernQRCode
         }
         imagedestroy($im);
         return $newIm;
+    }
+
+    private function addLogo($im, $logoPath, $logoSizePercent)
+    {
+        if (!file_exists($logoPath)) {
+            return $im; // Return original if logo doesn't exist
+        }
+        
+        $logo = imagecreatefromstring(file_get_contents($logoPath));
+        if (!$logo) {
+            return $im; // Return original if logo can't be loaded
+        }
+        
+        $qrWidth = imagesx($im);
+        $qrHeight = imagesy($im);
+        $logoWidth = imagesx($logo);
+        $logoHeight = imagesy($logo);
+        
+        // Calculate logo size (as percentage of QR code)
+        $newLogoSize = min($qrWidth, $qrHeight) * ($logoSizePercent / 100);
+        $newLogoSize = min($newLogoSize, min($qrWidth, $qrHeight) * 0.3); // Max 30% of QR size
+        
+        // Calculate new logo dimensions
+        $ratio = min($newLogoSize / $logoWidth, $newLogoSize / $logoHeight);
+        $newLogoWidth = $logoWidth * $ratio;
+        $newLogoHeight = $logoHeight * $ratio;
+        
+        // Create resized logo
+        $resizedLogo = imagecreatetruecolor($newLogoWidth, $newLogoHeight);
+        imagealphablending($resizedLogo, false);
+        imagesavealpha($resizedLogo, true);
+        $transparent = imagecolorallocatealpha($resizedLogo, 255, 255, 255, 127);
+        imagefill($resizedLogo, 0, 0, $transparent);
+        
+        imagecopyresampled($resizedLogo, $logo, 0, 0, 0, 0, $newLogoWidth, $newLogoHeight, $logoWidth, $logoHeight);
+        
+        // Calculate position (center of QR code)
+        $x = ($qrWidth - $newLogoWidth) / 2;
+        $y = ($qrHeight - $newLogoHeight) / 2;
+        
+        // Add logo to QR code
+        imagecopy($im, $resizedLogo, $x, $y, 0, 0, $newLogoWidth, $newLogoHeight);
+        
+        imagedestroy($logo);
+        imagedestroy($resizedLogo);
+        
+        return $im;
     }
 
     private function addLabel($im, $label, $size)
