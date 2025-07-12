@@ -208,48 +208,6 @@ $qrWithLogo = Barcode::modernQr([
 return response($qrWithLogo)->header('Content-Type', 'image/png');
 ```
 
-### Barcode with Image Watermark
-
-```php
-use Isahaq\Barcode\Facades\Barcode;
-use Isahaq\Barcode\Utils\Watermark;
-
-$barcodeWithWatermark = Barcode::withWatermark(
-    '1234567890',
-    'code128',
-    'png',
-    'path/to/watermark.png',
-    [
-        'position' => Watermark::POSITION_BOTTOM_RIGHT,
-        'opacity' => 0.7,
-        'scale' => 80, // Scale watermark to 80% of original size
-        'margin' => 10
-    ]
-);
-return response($barcodeWithWatermark)->header('Content-Type', 'image/png');
-```
-
-### Barcode with Text Watermark
-
-```php
-use Isahaq\Barcode\Facades\Barcode;
-use Isahaq\Barcode\Utils\Watermark;
-
-$barcodeWithTextWatermark = Barcode::withTextWatermark(
-    '1234567890',
-    'code128',
-    'png',
-    'CONFIDENTIAL',
-    [
-        'position' => Watermark::POSITION_CENTER,
-        'color' => [255, 0, 0], // Red text
-        'font_size' => 16,
-        'margin' => 20
-    ]
-);
-return response($barcodeWithTextWatermark)->header('Content-Type', 'image/png');
-```
-
 ### Available Watermark Positions
 
 ```php
