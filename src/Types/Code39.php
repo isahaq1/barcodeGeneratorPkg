@@ -7,14 +7,14 @@ use Isahaq\Barcode\Barcode;
 class Code39 implements BarcodeTypeInterface
 {
     // Code39 character set and patterns (narrow=1, wide=2, 9 elements per char)
-    private static array $charset = [
+    public static array $charset = [
         '0','1','2','3','4','5','6','7','8','9',
         'A','B','C','D','E','F','G','H','I','J',
         'K','L','M','N','O','P','Q','R','S','T',
         'U','V','W','X','Y','Z',
         '-','.',' ','$','/','+','%','*'
     ];
-    private static array $patterns = [
+    public static array $patterns = [
         '0' => '101001101101', '1' => '110100101011', '2' => '101100101011', '3' => '110110010101',
         '4' => '101001101011', '5' => '110100110101', '6' => '101100110101', '7' => '101001011011',
         '8' => '110100101101', '9' => '101100101101',
