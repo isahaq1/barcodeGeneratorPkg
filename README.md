@@ -194,7 +194,7 @@ return response($barcode)->header('Content-Type', 'image/png');
 
 ```php
 use Isahaq\Barcode\Facades\Barcode;
-$qrWithLogo = Barcode::qrWithLogo([
+$qrWithLogo = Barcode::modernQr([
     'data' => 'https://example.com',
     'size' => 300,
     'margin' => 10,
@@ -237,7 +237,7 @@ private function getMimeType($format)
 <img src="data:image/png;base64,{{ base64_encode(Barcode::modernQr(['data' => 'https://example.com'])) }}" alt="QR Code">
 
 <!-- QR Code with Logo -->
-<img src="data:image/png;base64,{{ base64_encode(Barcode::qrWithLogo([
+<img src="data:image/png;base64,{{ base64_encode(Barcode::modernQr([
     'data' => 'https://example.com',
     'logoPath' => 'http://127.0.0.1:8000/assets/images/logo-dark.png',
     'logoSize' => 60,
