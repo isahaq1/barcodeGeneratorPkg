@@ -26,4 +26,31 @@ class Barcode extends Facade
         if (isset($options['label'])) $qr->setLabel($options['label']);
         return $qr->writeString();
     }
+
+    /**
+     * Generate a QR code with logo using QrCodeBuilder
+     */
+    public static function qrWithLogo(array $options): string
+    {
+        $qrCode = \Isahaq\Barcode\QrCodeBuilder::create()
+            ->data($options['data'] ?? '')
+            ->size($options['size'] ?? 300)
+            ->margin($options['margin'] ?? 10)
+            ->foregroundColor($options['foreground_color'] ?? [0, 0, 0])
+            ->backgroundColor($options['background_color'] ?? [255, 255, 255]);
+        
+        if (isset($options['logoPath'])) {
+            $qrCode->logoPath($options['logoPath']);
+        }
+        
+        if (isset($options['label'])) {
+            $qrCode->label($options['label']);
+        }
+        
+        if (isset($options['labelFont'])) {
+            $qrCode->labelFont($options['labelFont'], $options['labelFontSize'] ?? 14);
+        }
+        
+        return $qrCode->format('png')->build()->getString();
+    }
 } 

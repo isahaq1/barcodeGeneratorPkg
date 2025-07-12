@@ -190,6 +190,22 @@ $qrCode = Barcode::modernQr([
 return response($barcode)->header('Content-Type', 'image/png');
 ```
 
+### QR Code with Logo (Laravel Facade)
+
+```php
+use Isahaq\Barcode\Facades\Barcode;
+$qrWithLogo = Barcode::qrWithLogo([
+    'data' => 'https://example.com',
+    'size' => 300,
+    'margin' => 10,
+    'logoPath' => 'path/to/logo.png',
+    'label' => 'Scan me!',
+    'labelFont' => 'path/to/font.ttf',
+    'labelFontSize' => 16
+]);
+return response($qrWithLogo)->header('Content-Type', 'image/png');
+```
+
 ### Using Service Provider
 
 ```php
@@ -219,6 +235,12 @@ private function getMimeType($format)
 ```php
 <img src="data:image/png;base64,{{ base64_encode(Barcode::png('1234567890')) }}" alt="Barcode">
 <img src="data:image/png;base64,{{ base64_encode(Barcode::modernQr(['data' => 'https://example.com'])) }}" alt="QR Code">
+
+<!-- QR Code with Logo -->
+<img src="data:image/png;base64,{{ base64_encode(Barcode::qrWithLogo([
+    'data' => 'https://example.com',
+    'logoPath' => 'http://127.0.0.1:8000/assets/images/logo-dark.png'
+])) }}" alt="QR Code with Logo">
 // routes/web.php
 Route::get('/barcode/{data}', function ($data) {
     $barcode = Barcode::png($data, 'code128');
