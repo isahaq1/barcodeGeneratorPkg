@@ -159,6 +159,51 @@ class PNGRenderer implements RendererInterface
             imagedestroy($im);
             return $pngData;
         }
+        // Special rendering for Code39
+        if ($barcode->type === 'Code39') {
+            $narrow = $options['narrow'] ?? 2;
+            $wide = $options['wide'] ?? 5;
+            $height = $options['height'] ?? 50;
+            $margin = $options['margin'] ?? 20;
+            $font = 4;
+            $patternBars = [];
+            // Convert bars to wide/narrow
+            foreach ($barcode->bars as $i => $bar) {
+                $barWidth = ($bar[0] === 1) ? $narrow : $wide;
+                $patternBars[] = [$barWidth, $bar[1]];
+            }
+            $totalWidth = 0;
+            foreach ($patternBars as $bar) {
+                $totalWidth += $bar[0];
+            }
+            $imageWidth = $totalWidth + 2 * $margin;
+            $imageHeight = $height + $margin + 24;
+            $im = imagecreatetruecolor($imageWidth, $imageHeight);
+            $bgColor = imagecolorallocate($im, $bg[0], $bg[1], $bg[2]);
+            $fgColor = imagecolorallocate($im, $fg[0], $fg[1], $fg[2]);
+            imagefill($im, 0, 0, $bgColor);
+            $x = $margin;
+            foreach ($patternBars as $bar) {
+                if ($bar[1] === 'black') {
+                    imagefilledrectangle($im, $x, $margin, $x + $bar[0] - 1, $margin + $height, $fgColor);
+                }
+                $x += $bar[0];
+            }
+            // Human-readable text (strip * from start/end)
+            $text = $barcode->data;
+            if (strlen($text) > 2 && $text[0] === '*' && $text[strlen($text)-1] === '*') {
+                $text = substr($text, 1, -1);
+            }
+            $textBoxWidth = imagefontwidth($font) * strlen($text);
+            $textX = ($imageWidth - $textBoxWidth) / 2;
+            $textY = $margin + $height + 2;
+            imagestring($im, $font, $textX, $textY, $text, $fgColor);
+            ob_start();
+            imagepng($im);
+            $pngData = ob_get_clean();
+            imagedestroy($im);
+            return $pngData;
+        }
         // Default rendering for other 1D barcodes
         $x = $margin;
         foreach ($bars as $bar) {
