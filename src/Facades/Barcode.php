@@ -44,4 +44,13 @@ class Barcode extends Facade
         if (isset($options['logoPath'])) $qr->setLogo($options['logoPath'], $options['logoSize'] ?? 60);
         return $qr->writeString();
     }
+
+    /**
+     * Debug logo loading
+     */
+    public static function debugLogo(string $logoPath): array
+    {
+        $qr = new \Isahaq\Barcode\Utils\ModernQRCode();
+        return $qr->debugLogo($logoPath);
+    }
 } 

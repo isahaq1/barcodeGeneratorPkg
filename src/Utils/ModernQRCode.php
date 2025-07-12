@@ -63,6 +63,53 @@ class ModernQRCode
         return $this;
     }
 
+    /**
+     * Debug method to test logo loading
+     */
+    public function debugLogo(string $logoPath): array
+    {
+        $result = [
+            'success' => false,
+            'message' => '',
+            'logoPath' => $logoPath
+        ];
+        
+        if (filter_var($logoPath, FILTER_VALIDATE_URL)) {
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 10,
+                    'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                ]
+            ]);
+            $logoData = @file_get_contents($logoPath, false, $context);
+            
+            if ($logoData === false) {
+                $result['message'] = 'Failed to load logo from URL';
+                return $result;
+            }
+        } else {
+            if (!file_exists($logoPath)) {
+                $result['message'] = 'Logo file does not exist';
+                return $result;
+            }
+            $logoData = file_get_contents($logoPath);
+        }
+        
+        $logo = @imagecreatefromstring($logoData);
+        if (!$logo) {
+            $result['message'] = 'Failed to create image from logo data';
+            return $result;
+        }
+        
+        $result['success'] = true;
+        $result['message'] = 'Logo loaded successfully';
+        $result['width'] = imagesx($logo);
+        $result['height'] = imagesy($logo);
+        
+        imagedestroy($logo);
+        return $result;
+    }
+
     public function writeString(): string
     {
         require_once __DIR__ . '/phpqrcode.php';
@@ -142,11 +189,30 @@ class ModernQRCode
 
     private function addLogo($im, $logoPath, $logoSizePercent)
     {
-        if (!file_exists($logoPath)) {
-            return $im; // Return original if logo doesn't exist
+        // Handle both local files and URLs
+        $logoData = null;
+        
+        if (filter_var($logoPath, FILTER_VALIDATE_URL)) {
+            // It's a URL
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 10,
+                    'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                ]
+            ]);
+            $logoData = @file_get_contents($logoPath, false, $context);
+        } else {
+            // It's a local file
+            if (file_exists($logoPath)) {
+                $logoData = file_get_contents($logoPath);
+            }
         }
         
-        $logo = imagecreatefromstring(file_get_contents($logoPath));
+        if (!$logoData) {
+            return $im; // Return original if logo can't be loaded
+        }
+        
+        $logo = imagecreatefromstring($logoData);
         if (!$logo) {
             return $im; // Return original if logo can't be loaded
         }
