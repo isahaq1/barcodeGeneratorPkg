@@ -159,30 +159,45 @@ class PNGRenderer implements RendererInterface
             imagedestroy($im);
             return $pngData;
         }
-        // Special rendering for all Code39 variants
+        // Special rendering for all Code39 variants (real, scannable)
         if (strpos($barcode->type, 'Code39') === 0) {
             $narrow = $options['narrow'] ?? 2;
             $wide = $options['wide'] ?? 5;
             $height = $options['height'] ?? 50;
             $margin = $options['margin'] ?? 20;
             $font = 4;
+            $quietZone = $options['quiet_zone'] ?? 10;
             $patternBars = [];
-            // Convert bars to wide/narrow
-            foreach ($barcode->bars as $i => $bar) {
-                $barWidth = ($bar[0] === 1) ? $narrow : $wide;
-                $patternBars[] = [$barWidth, $bar[1]];
+            // For each character, alternate bar/space, using wide/narrow widths
+            $encoded = $barcode->data;
+            if (strlen($encoded) > 2 && $encoded[0] === '*' && $encoded[strlen($encoded)-1] === '*') {
+                $encoded = substr($encoded, 1, -1);
             }
+            $full = '*' . $encoded . '*';
+            $patterns = \Isahaq\Barcode\Types\Code39::$patterns;
+            foreach (str_split($full) as $char) {
+                $pattern = $patterns[$char];
+                for ($i = 0; $i < 9; $i++) {
+                    $isBar = $i % 2 === 0;
+                    $w = $pattern[$i] === '1' ? $narrow : $wide;
+                    $patternBars[] = [$w, $isBar ? 'black' : 'white'];
+                }
+                // Inter-character gap (narrow white space)
+                $patternBars[] = [$narrow, 'white'];
+            }
+            // Remove last gap
+            array_pop($patternBars);
             $totalWidth = 0;
             foreach ($patternBars as $bar) {
                 $totalWidth += $bar[0];
             }
-            $imageWidth = $totalWidth + 2 * $margin;
+            $imageWidth = $totalWidth + 2 * $margin + 2 * $quietZone;
             $imageHeight = $height + $margin + 24;
             $im = imagecreatetruecolor($imageWidth, $imageHeight);
             $bgColor = imagecolorallocate($im, $bg[0], $bg[1], $bg[2]);
             $fgColor = imagecolorallocate($im, $fg[0], $fg[1], $fg[2]);
             imagefill($im, 0, 0, $bgColor);
-            $x = $margin;
+            $x = $margin + $quietZone;
             foreach ($patternBars as $bar) {
                 if ($bar[1] === 'black') {
                     imagefilledrectangle($im, $x, $margin, $x + $bar[0] - 1, $margin + $height, $fgColor);
