@@ -1,3 +1,5 @@
+![Isahaq Barcode Generator](banner.png)
+
 # Isahaq Barcode Generator
 
 A universal barcode generator package supporting **32+ barcode types** (linear, 2D, postal, stacked, and auto-detection variants), multiple output formats, CLI, and full Laravel integration (Service Provider & Facade).
