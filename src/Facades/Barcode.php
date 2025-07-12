@@ -29,6 +29,43 @@ class Barcode extends Facade
     }
 
     /**
+     * Generate barcode with image watermark
+     */
+    public static function withWatermark(
+        string $data, 
+        string $type = 'code128', 
+        string $format = 'png',
+        string $watermarkPath = '',
+        array $watermarkOptions = []
+    ): string {
+        $service = app('barcode');
+        return $service->withWatermark($data, $type, $format, $watermarkPath, $watermarkOptions);
+    }
+
+    /**
+     * Generate barcode with text watermark
+     */
+    public static function withTextWatermark(
+        string $data, 
+        string $type = 'code128', 
+        string $format = 'png',
+        string $text = '',
+        array $textOptions = []
+    ): string {
+        $service = app('barcode');
+        return $service->withTextWatermark($data, $type, $format, $text, $textOptions);
+    }
+
+    /**
+     * Get available watermark positions
+     */
+    public static function getWatermarkPositions(): array
+    {
+        $service = app('barcode');
+        return $service->getWatermarkPositions();
+    }
+
+    /**
      * Debug logo loading
      */
     public static function debugLogo(string $logoPath): array
