@@ -159,8 +159,8 @@ class PNGRenderer implements RendererInterface
             imagedestroy($im);
             return $pngData;
         }
-        // Special rendering for Code39
-        if ($barcode->type === 'Code39') {
+        // Special rendering for all Code39 variants
+        if (strpos($barcode->type, 'Code39') === 0) {
             $narrow = $options['narrow'] ?? 2;
             $wide = $options['wide'] ?? 5;
             $height = $options['height'] ?? 50;
