@@ -6,11 +6,11 @@ use Isahaq\Barcode\Barcode;
 
 class MSI implements BarcodeTypeInterface
 {
-    // MSI patterns for digits 0-9 (bars/spaces, 4 elements each)
+    // MSI patterns for digits 0-9 (4 bars per digit)
     private static array $patterns = [
-        '0' => '100100100100', '1' => '100100100110', '2' => '100100110100', '3' => '100100110110',
-        '4' => '100110100100', '5' => '100110100110', '6' => '100110110100', '7' => '100110110110',
-        '8' => '110100100100', '9' => '110100100110',
+        '0' => '1001', '1' => '1100', '2' => '1010', '3' => '1111',
+        '4' => '1101', '5' => '1011', '6' => '1000', '7' => '1110',
+        '8' => '0010', '9' => '0001',
     ];
 
     public function encode(string $data): Barcode
@@ -19,9 +19,19 @@ class MSI implements BarcodeTypeInterface
         if (!preg_match('/^\d+$/', $data)) {
             throw new \InvalidArgumentException('MSI must be numeric');
         }
+        
+        if (empty($data)) {
+            throw new \InvalidArgumentException('MSI data cannot be empty');
+        }
+
         $bars = [];
-        // Start bar (single black bar)
-        $bars[] = [2, 'black'];
+        
+        // Start code: narrow bar, narrow space, narrow bar, narrow space
+        $bars[] = [1, 'black'];  // Start bar
+        $bars[] = [1, 'white'];  // Space
+        $bars[] = [1, 'black'];  // Bar
+        $bars[] = [1, 'white'];  // Space
+        
         // Encode each digit
         for ($i = 0; $i < strlen($data); $i++) {
             $pattern = self::$patterns[$data[$i]];
@@ -29,15 +39,22 @@ class MSI implements BarcodeTypeInterface
                 $bars[] = [1, $pattern[$j] === '1' ? 'black' : 'white'];
             }
         }
-        // Stop bar (single black bar)
-        $bars[] = [2, 'black'];
+        
+        // Stop code: wide bar, narrow space, narrow bar
+        $bars[] = [2, 'black'];  // Wide stop bar
+        $bars[] = [1, 'white'];  // Space
+        $bars[] = [1, 'black'];  // Final bar
+        
         $width = 0;
-        foreach ($bars as $bar) { $width += $bar[0]; }
+        foreach ($bars as $bar) { 
+            $width += $bar[0]; 
+        }
+        
         return new Barcode('MSI', $data, $bars, $width);
     }
 
     public function validate(string $data): bool
     {
-        return preg_match('/^\d+$/', $data);
+        return preg_match('/^\d+$/', $data) && !empty($data);
     }
 } 

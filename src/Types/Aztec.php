@@ -6,34 +6,30 @@ use Isahaq\Barcode\Barcode;
 
 class Aztec implements BarcodeTypeInterface
 {
-    private static array $aztecPatterns = [
-        // Aztec Code patterns for different sizes
-        // This is a simplified implementation
-    ];
-
     public function encode(string $data, array $options = []): Barcode
     {
-        $size = $options['size'] ?? 'Auto';
-        $errorCorrection = $options['error_correction'] ?? 23; // 23% default
-        
-        // For now, return a placeholder Aztec structure
-        $bars = [
-            [1, 'black'], [1, 'white'], [1, 'black'], [1, 'white'], [1, 'black'], // Bullseye pattern
-            [1, 'white'], [1, 'black'], [1, 'white'], [1, 'black'], [1, 'white'],
-            [1, 'black'], [1, 'white'], [1, 'black'], [1, 'white'], [1, 'black'],
-            [1, 'white'], [1, 'black'], [1, 'white'], [1, 'black'], [1, 'white'],
-            [1, 'black'], [1, 'white'], [1, 'black'], [1, 'white'], [1, 'black'],
-        ];
-        
-        $width = 0;
-        foreach ($bars as $bar) { $width += $bar[0]; }
-        
-        return new Barcode('Aztec', $data, $bars, $width);
+        // For demo: create a bullseye in the center and a checkerboard grid
+        $size = 19; // Small Aztec for demo
+        $bars = [];
+        for ($y = 0; $y < $size; $y++) {
+            for ($x = 0; $x < $size; $x++) {
+                $dx = $x - intdiv($size, 2);
+                $dy = $y - intdiv($size, 2);
+                $dist = sqrt($dx * $dx + $dy * $dy);
+                // Draw bullseye in center
+                if (abs($dist - 2) < 1 || abs($dist - 4) < 1 || abs($dist - 6) < 1) {
+                    $bars[] = [$x, $y, 'black'];
+                } elseif (($x + $y) % 2 === 0 && $dist > 6) {
+                    $bars[] = [$x, $y, 'black'];
+                }
+            }
+        }
+        // The Barcode class and renderer must be able to handle (x, y, color) bars for this to work.
+        return new Barcode('Aztec', $data, $bars, $size);
     }
 
     public function validate(string $data): bool
     {
-        // Aztec codes can contain any data
         return strlen($data) > 0;
     }
 } 
