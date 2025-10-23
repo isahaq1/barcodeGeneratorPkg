@@ -115,6 +115,8 @@ file_put_contents('barcode.png', $result);
 // ... after generating $barcode (PNG data)
 $barcodeImage = base64_encode($barcode);
 echo '<img src="data:image/png;base64,' . $barcodeImage . '" alt="Barcode" />';
+//with custom height width
+echo '<img src="data:image/png;base64,' . $barcodeImage . '" alt="Barcode" />';
 ```
 
 ### QR Code with Logo and Watermark
@@ -243,6 +245,13 @@ private function getMimeType($format)
 ### Blade Templates & Routes
 
 ```php
+<img src="data:image/png;base64,{{ base64_encode(Barcode::png('1234567890','C128',['width' => 1,
+    'height' => 40,
+    'foreground_color' => [255, 0, 0], // Red
+    'background_color' => [255, 255, 255], // White
+    'padding' => 20
+])) }}" alt="Barcode">
+//with custom height width
 <img src="data:image/png;base64,{{ base64_encode(Barcode::png('1234567890')) }}" alt="Barcode">
 <img src="data:image/png;base64,{{ base64_encode(Barcode::modernQr(['data' => 'https://example.com'])) }}" alt="QR Code">
 
