@@ -1,0 +1,57 @@
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.buildpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# PHP
+*.phar
+.phar
+php_cs.cache
+.php_cs.cache
+
+# Composer
+/vendor/
+composer.lock
+composer.phar
+
+# Testing
+/coverage/
+.phpunit.result.cache
+phpunit.xml
+
+# Logs
+*.log
+
+# Build artifacts
+/build/
+/dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+.tmp/
+tmp/
+temp/
+
+# Generated barcodes (test outputs)
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+!/.github/

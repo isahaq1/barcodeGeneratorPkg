@@ -1,21 +1,35 @@
 {
   "name": "isahaq/barcode",
-  "description": "A universal barcode generator package supporting multiple barcode types and output formats, with extra features like batch generation, watermarking, validation, CLI, and Laravel Facade support.",
+  "description": "A universal barcode generator package supporting 32+ barcode types and multiple output formats (PNG, SVG, HTML, JPG, PDF), with batch generation, validation, CLI, and full Laravel integration.",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://github.com/isahaq1/barcodeGeneratorPkg",
   "keywords": [
     "barcode",
     "qrcode",
     "generator",
     "laravel",
-    "php"
+    "php",
+    "code128",
+    "ean13",
+    "pdf417",
+    "data-matrix",
+    "batch-generation"
   ],
   "authors": [
     {
       "name": "Isahaq",
-      "email": "hmisahaq01@gmail.com"
+      "email": "hmisahaq01@gmail.com",
+      "homepage": "https://github.com/isahaq1",
+      "role": "Developer"
     }
   ],
+  "support": {
+    "issues": "https://github.com/isahaq1/barcodeGeneratorPkg/issues",
+    "source": "https://github.com/isahaq1/barcodeGeneratorPkg",
+    "docs": "https://github.com/isahaq1/barcodeGeneratorPkg/wiki",
+    "email": "hmisahaq01@gmail.com"
+  },
   "autoload": {
     "psr-4": {
       "Isahaq\\Barcode\\": "src/"
@@ -27,11 +41,17 @@
     "illuminate/support": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.0"
+    "phpunit/phpunit": "^9.0 || ^10.0"
   },
   "bin": [
     "src/CLI/generate.php"
   ],
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test:coverage": "vendor/bin/phpunit --coverage-html coverage/",
+    "format": "php-cs-fixer fix src/ tests/ --allow-risky=yes",
+    "lint": "php -l src/ tests/"
+  },
   "extra": {
     "laravel": {
       "providers": [
@@ -41,5 +61,7 @@
         "Barcode": "Isahaq\\Barcode\\Facades\\Barcode"
       }
     }
-  }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
 }

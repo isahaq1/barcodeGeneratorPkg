@@ -1,13 +1,14 @@
 ![License](https://img.shields.io/github/license/isahaq1/barcodeGeneratorPkg)
 ![Stars](https://img.shields.io/github/stars/isahaq1/barcodeGeneratorPkg)
 ![Issues](https://img.shields.io/github/issues/isahaq1/barcodeGeneratorPkg)
+![PHP Version](https://img.shields.io/badge/php-%3E%3D8.0-blue)
+![Packagist](https://img.shields.io/packagist/v/isahaq/barcode)
 
-
-![Isahaq Barcode Generator](banner.png)
-
-# Isahaq Barcode Generator
+# 📊 Isahaq Barcode Generator
 
 A universal barcode generator package supporting **32+ barcode types** (linear, 2D, postal, stacked, and auto-detection variants), multiple output formats, CLI, and full Laravel integration (Service Provider & Facade).
+
+> Generate barcodes of any type, in any format, anywhere. Perfect for e-commerce, inventory management, ticketing, and more.
 
 ---
 
@@ -15,11 +16,14 @@ A universal barcode generator package supporting **32+ barcode types** (linear, 
 
 - **32+ Barcode Types**: Linear, 2D, postal, stacked, and auto-detection variants
 - **Multiple Output Formats**: PNG, SVG, HTML, JPG, PDF
-- **Laravel Integration**: Service Provider and Facade support
+- **Laravel Integration**: Service Provider and Facade support  
 - **CLI Tool**: Command-line interface for quick barcode generation
 - **QR Code Builder**: Fluent API for advanced QR code generation
+- **Batch Generation**: Generate multiple barcodes efficiently
 - **Validation**: Built-in data validation for different barcode types
 - **Customization**: Size, colors, margins, and more options
+- **No External Dependencies**: Pure PHP implementation
+- **Well-Tested**: Comprehensive test suite included
 
 ## 📦 Installation
 
@@ -33,7 +37,7 @@ composer require isahaq/barcode
 
 - PHP 8.0 or higher
 - ext-mbstring extension
-- For Laravel: Illuminate/Support 8.0+ (automatically included)
+- For Laravel: Illuminate/Support 8.0+ (automatically included if using Laravel)
 
 ## 🔧 Why Use This Package?
 
@@ -98,6 +102,189 @@ If you are using an older version of Laravel (before package auto-discovery), ad
 - **Code16K**, **Code49**
 
 ---
+
+## 🛠️ Quick Usage Examples
+
+### Basic Barcode Generation
+
+```php
+use Isahaq\Barcode\Types\Code128;
+use Isahaq\Barcode\Renderers\PNGRenderer;
+
+$barcodeType = new Code128();
+$renderer = new PNGRenderer();
+$barcode = $barcodeType->encode('1234567890');
+$pngData = $renderer->render($barcode);
+file_put_contents('barcode.png', $pngData);
+```
+
+### Laravel Usage (with Facade)
+
+```php
+// Generate QR Code
+$qrCode = Barcode::qrCode()
+    ->data('https://example.com')
+    ->size(300)
+    ->format('png')
+    ->generate();
+
+// Generate EAN13 Barcode
+$ean13 = Barcode::code('EAN13', '1234567890128')
+    ->png()
+    ->save('barcode.png');
+
+// Get as Base64 (for web display)
+$base64 = Barcode::code('Code128', '123456')
+    ->png()
+    ->asBase64();
+```
+
+### Display Barcode as HTML Image
+
+```php
+$barcodeImage = $renderer->render($barcode);
+$base64 = base64_encode($barcodeImage);
+echo '<img src="data:image/png;base64,' . $base64 . '" alt="Barcode" />';
+```
+
+### Batch Generation
+
+```php
+use Isahaq\Barcode\Utils\BatchGenerator;
+
+$batch = new BatchGenerator();
+$codes = ['ABC123', 'DEF456', 'GHI789'];
+
+foreach ($codes as $code) {
+    $barcode = $batch->generate('Code128', $code, 'png');
+    file_put_contents("barcode_{$code}.png", $barcode);
+}
+```
+
+### Validation
+
+```php
+use Isahaq\Barcode\Utils\Validator;
+
+$validator = new Validator();
+if ($validator->validate('EAN13', '1234567890128')) {
+    echo 'Valid EAN13';
+} else {
+    echo 'Invalid EAN13';
+}
+```
+
+### CLI Usage
+
+```bash
+php src/CLI/generate.php --type=Code128 --data=123456 --format=png --output=barcode.png
+```
+
+---
+
+## 📚 Documentation
+
+Full documentation available at [docs/](docs/) directory:
+
+- [Installation Guide](docs/INSTALLATION.md)
+- [API Reference](docs/API.md)
+- [Barcode Types](docs/BARCODE_TYPES.md)
+- [Output Formats](docs/RENDERERS.md)
+- [Laravel Integration](docs/LARAVEL.md)
+- [Examples](docs/EXAMPLES.md)
+
+---
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+composer test
+# or
+vendor/bin/phpunit
+```
+
+Test coverage includes:
+
+- Barcode type encoding validation
+- Renderer output formats
+- Laravel integration tests
+- Batch generation
+- Data validation
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Make** your changes
+4. **Write** or update tests
+5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+6. **Push** to the branch (`git push origin feature/amazing-feature`)
+7. **Open** a Pull Request
+
+### Contribution Guidelines
+
+- Follow PSR-12 coding standards
+- Write unit tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting
+
+---
+
+## 📝 License
+
+This package is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🐛 Bug Reports & Feature Requests
+
+Found a bug or have an idea? [Open an issue](https://github.com/isahaq1/barcodeGeneratorPkg/issues) on GitHub.
+
+---
+
+## 💬 Support
+
+- **Issues**: [GitHub Issues](https://github.com/isahaq1/barcodeGeneratorPkg/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/isahaq1/barcodeGeneratorPkg/discussions)
+- **Email**: hmisahaq01@gmail.com
+
+---
+
+## 📊 Barcode Types Reference
+
+| Type | Example | Best For |
+|------|---------|----------|
+| Code128 | `ABC123` | General purpose, high data density |
+| Code39 | `ABC-123` | Alphanumeric, inventory |
+| EAN13 | `5901234123457` | Retail products (13 digits) |
+| EAN8 | `96385074` | Small products (8 digits) |
+| QR Code | Any data | URLs, contact info, product data |
+| DataMatrix | Any data | Small spaces, pharmaceutical |
+| PDF417 | Large data | IDs, documents, certificates |
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with PHP 8.0+
+- Inspired by industry-standard barcode specifications
+- Thanks to all contributors and users
+
+---
+
+## 📈 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
+
+---
+
+Made with ❤️ by [Isahaq](https://github.com/isahaq1)
 
 ## 🛠️ Usage
 
