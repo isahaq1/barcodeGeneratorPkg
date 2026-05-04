@@ -24,6 +24,25 @@ jobs:
           coverage: xdebug
           tools: composer:v2
 
+      - name: Check PHP version and extensions
+        run: |
+          php -v
+          php -m | grep -E 'mbstring|gd|SPL' || echo "Some extensions missing"
+          php -r "echo extension_loaded('gd') ? 'GD loaded' : 'GD not loaded'; echo PHP_EOL;"
+
+      - name: Test GD functions
+        run: |
+          php -r "
+          $im = @imagecreatetruecolor(100, 100);
+          if ($im) {
+            echo 'GD functions work' . PHP_EOL;
+            imagedestroy($im);
+          } else {
+            echo 'GD functions failed' . PHP_EOL;
+            exit(1);
+          }
+          "
+
       - name: Validate composer.json
         run: composer validate
 
@@ -40,7 +59,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run tests
-        run: ./vendor/bin/phpunit
+        run: ./vendor/bin/phpunit --testdox
 
       - name: Upload coverage reports
         if: matrix.php-version == '8.3'

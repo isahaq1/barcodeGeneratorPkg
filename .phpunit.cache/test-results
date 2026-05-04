@@ -1,1 +1,1 @@
-{"version":2,"defects":{"Code128Test::testInvalidEncoding":7},"times":{"Code128Test::testValidEncoding":0.001,"Code128Test::testInvalidEncoding":0.003,"PNGRendererTest::testRenderPNG":0.002}}
+{"version":2,"defects":{"Code128Test::testInvalidEncoding":7},"times":{"Code128Test::testValidEncoding":0.003,"Code128Test::testInvalidEncoding":0.006,"PNGRendererTest::testRenderPNG":0.003,"DiagnosticTest::testBasicFunctionality":0,"DiagnosticTest::testPhpVersion":0.001,"DiagnosticTest::testGDExtension":0,"DiagnosticTest::testImageCreation":0}}
