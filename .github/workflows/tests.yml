@@ -20,10 +20,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, gd, imagick
+          extensions: mbstring, gd
           coverage: xdebug
+          tools: composer:v2
 
-      - name: Validate composer.json and composer.lock
+      - name: Validate composer.json
         run: composer validate
 
       - name: Cache Composer packages
@@ -31,15 +32,15 @@ jobs:
         uses: actions/cache@v3
         with:
           path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-php-
+            ${{ runner.os }}-php-${{ matrix.php-version }}-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run tests
-        run: vendor/bin/phpunit
+        run: ./vendor/bin/phpunit
 
       - name: Upload coverage reports
         if: matrix.php-version == '8.3'
@@ -48,7 +49,7 @@ jobs:
           files: ./coverage/coverage.xml
           fail_ci_if_error: false
 
-  code-style:
+  code-quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -57,25 +58,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
+          tools: composer:v2
 
       - name: Install dependencies
-        run: composer install
-
-      - name: Check PHP syntax
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff || true
-
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-
-      - name: Install dependencies
-        run: composer install
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Check for security vulnerabilities
         run: composer audit || true
+
+      - name: Check PHP syntax
+        run: find src tests -name "*.php" -exec php -l {} \; || true
