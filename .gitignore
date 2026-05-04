@@ -23,13 +23,11 @@ php_cs.cache
 
 # Composer
 /vendor/
-composer.lock
 composer.phar
 
 # Testing
 /coverage/
 .phpunit.result.cache
-phpunit.xml
 
 # Logs
 *.log
