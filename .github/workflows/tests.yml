@@ -31,7 +31,19 @@ jobs:
           php -r "echo extension_loaded('gd') ? 'GD loaded' : 'GD not loaded'; echo PHP_EOL;"
 
       - name: Test GD functions
-        run: php -r '\\$im = @imagecreatetruecolor(100, 100); if (\\$im) { echo \\'GD functions work\\' . PHP_EOL; imagedestroy(\\$im); } else { echo \\'GD functions failed\\' . PHP_EOL; exit(1); }'
+        run: |
+          echo "<?php
+          \$im = @imagecreatetruecolor(100, 100);
+          if (\$im) {
+            echo 'GD functions work' . PHP_EOL;
+            imagedestroy(\$im);
+          } else {
+            echo 'GD functions failed' . PHP_EOL;
+            exit(1);
+          }
+          ?>" > gd_test.php
+          php gd_test.php
+          rm gd_test.php
 
       - name: Validate composer.json
         run: composer validate
