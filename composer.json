@@ -53,6 +53,11 @@
     "format": "php-cs-fixer fix src/ tests/ --allow-risky=yes",
     "lint": "php -l src/ tests/"
   },
+  "config": {
+    "platform": {
+      "php": "8.0.30"
+    }
+  },
   "extra": {
     "laravel": {
       "providers": [
