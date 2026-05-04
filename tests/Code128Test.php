@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use UniversalBarcodeGenerator\Types\Code128;
+use Isahaq\Barcode\Types\Code128;
 
 class Code128Test extends TestCase
 {
@@ -18,6 +18,7 @@ class Code128Test extends TestCase
     public function testInvalidEncoding()
     {
         $type = new Code128();
-        $this->assertFalse($type->validate("@")); // '@' not in demo pattern
+        // Character with ASCII < 32 (control character)
+        $this->assertFalse($type->validate("\x01")); 
     }
 } 

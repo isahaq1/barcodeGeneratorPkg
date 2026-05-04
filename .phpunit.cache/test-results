@@ -1,0 +1,1 @@
+{"version":2,"defects":{"Code128Test::testInvalidEncoding":7},"times":{"Code128Test::testValidEncoding":0.001,"Code128Test::testInvalidEncoding":0.003,"PNGRendererTest::testRenderPNG":0.002}}

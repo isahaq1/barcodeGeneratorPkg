@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use UniversalBarcodeGenerator\Types\Code128;
-use UniversalBarcodeGenerator\Renderers\PNGRenderer;
+use Isahaq\Barcode\Types\Code128;
+use Isahaq\Barcode\Renderers\PNGRenderer;
 
 class PNGRendererTest extends TestCase
 {

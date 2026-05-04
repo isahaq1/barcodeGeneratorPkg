@@ -16,7 +16,7 @@ A universal barcode generator package supporting **32+ barcode types** (linear, 
 
 - **32+ Barcode Types**: Linear, 2D, postal, stacked, and auto-detection variants
 - **Multiple Output Formats**: PNG, SVG, HTML, JPG, PDF
-- **Laravel Integration**: Service Provider and Facade support  
+- **Laravel Integration**: Service Provider and Facade support
 - **CLI Tool**: Command-line interface for quick barcode generation
 - **QR Code Builder**: Fluent API for advanced QR code generation
 - **Batch Generation**: Generate multiple barcodes efficiently
@@ -258,15 +258,15 @@ Found a bug or have an idea? [Open an issue](https://github.com/isahaq1/barcodeG
 
 ## 📊 Barcode Types Reference
 
-| Type | Example | Best For |
-|------|---------|----------|
-| Code128 | `ABC123` | General purpose, high data density |
-| Code39 | `ABC-123` | Alphanumeric, inventory |
-| EAN13 | `5901234123457` | Retail products (13 digits) |
-| EAN8 | `96385074` | Small products (8 digits) |
-| QR Code | Any data | URLs, contact info, product data |
-| DataMatrix | Any data | Small spaces, pharmaceutical |
-| PDF417 | Large data | IDs, documents, certificates |
+| Type       | Example         | Best For                           |
+| ---------- | --------------- | ---------------------------------- |
+| Code128    | `ABC123`        | General purpose, high data density |
+| Code39     | `ABC-123`       | Alphanumeric, inventory            |
+| EAN13      | `5901234123457` | Retail products (13 digits)        |
+| EAN8       | `96385074`      | Small products (8 digits)          |
+| QR Code    | Any data        | URLs, contact info, product data   |
+| DataMatrix | Any data        | Small spaces, pharmaceutical       |
+| PDF417     | Large data      | IDs, documents, certificates       |
 
 ---
 

@@ -13,10 +13,10 @@ We take security seriously and will respond to your report as soon as possible.
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.x     | ✅ Supported       |
-| < 1.0   | ❌ Not Supported   |
+| Version | Supported        |
+| ------- | ---------------- |
+| 1.x     | ✅ Supported     |
+| < 1.0   | ❌ Not Supported |
 
 ## Security Best Practices
 

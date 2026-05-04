@@ -52,6 +52,7 @@ git push -u origin main
 ### 4. Update Repository Settings on GitHub
 
 Go to **Settings** → **General**:
+
 - [ ] Add description: "A universal barcode generator supporting 32+ barcode types"
 - [ ] Add website: `https://packagist.org/packages/isahaq/barcode`
 - [ ] Add topics: `barcode`, `qrcode`, `generator`, `laravel`, `php`
@@ -61,6 +62,7 @@ Go to **Settings** → **General**:
 ### 5. Configure Branch Protection
 
 Go to **Settings** → **Branches**:
+
 - [ ] Add branch protection rule for `main`:
   - [ ] Require a pull request before merging
   - [ ] Require status checks to pass before merging (once CI/CD is set up)
@@ -70,11 +72,13 @@ Go to **Settings** → **Branches**:
 ### 6. Set Up GitHub Pages (Optional)
 
 Go to **Settings** → **Pages**:
+
 - [ ] Enable GitHub Pages from `main` branch `/docs` folder (if you have documentation)
 
 ### 7. Add Repository Topics
 
 Go to **Settings** → **General** → **Topics** and add:
+
 - barcode-generator
 - qrcode
 - laravel-package
@@ -87,21 +91,25 @@ Go to **Settings** → **General** → **Topics** and add:
 2. Tag: `v1.0.0`
 3. Release title: `Version 1.0.0 - Initial Public Release`
 4. Description:
+
    ```markdown
    First public release of the Isahaq Barcode Generator package!
-   
+
    ### Features
+
    - 32+ barcode types support
    - Multiple output formats (PNG, SVG, HTML, JPG, PDF)
    - Laravel integration
    - CLI tool
    - Comprehensive documentation
-   
+
    ### Installation
+
    composer require isahaq/barcode
-   
+
    See [README.md](https://github.com/isahaq1/barcodeGeneratorPkg) for full documentation.
    ```
+
 5. Click "Publish release"
 
 ## 📦 Verify Packagist
@@ -111,6 +119,7 @@ Go to **Settings** → **General** → **Topics** and add:
 3. The package should auto-update when you push to GitHub (if webhooks are configured)
 
 If needed, you can manually trigger an update:
+
 1. Go to your Packagist package page
 2. Look for an "Update" or "Force Update" button
 

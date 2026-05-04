@@ -72,7 +72,7 @@ vendor/bin/phpunit --coverage-html coverage/
 
 ## Code Style Guidelines
 
-This project follows **PSR-12** coding standards. 
+This project follows **PSR-12** coding standards.
 
 ### Key Points
 
@@ -93,14 +93,14 @@ use Isahaq\Barcode\Types\BarcodeTypeInterface;
 
 /**
  * Code128 Barcode Type
- * 
+ *
  * @package Isahaq\Barcode\Types
  */
 class Code128 implements BarcodeTypeInterface
 {
     /**
      * Encode data using Code128
-     * 
+     *
      * @param string $data The data to encode
      * @return array The encoded barcode structure
      */
@@ -138,6 +138,7 @@ Changes
 ```
 
 Where `<type>` is one of:
+
 - **feat**: A new feature
 - **fix**: A bug fix
 - **docs**: Documentation only changes
@@ -169,7 +170,7 @@ class NewBarcode implements BarcodeTypeInterface
     {
         // Your implementation
     }
-    
+
     public function validate(string $data): bool
     {
         // Your validation logic

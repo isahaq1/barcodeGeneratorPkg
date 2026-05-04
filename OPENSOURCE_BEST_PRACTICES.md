@@ -39,6 +39,7 @@ Create these labels in your GitHub repository:
 ### Versioning Strategy
 
 Follow **Semantic Versioning** (SemVer):
+
 - **MAJOR.MINOR.PATCH** (e.g., 1.2.3)
 - **MAJOR**: Breaking changes
 - **MINOR**: New features (backward compatible)
@@ -78,6 +79,7 @@ composer audit
 ### Use Badges
 
 Include badges in your README for:
+
 - License: ![License](https://img.shields.io/github/license/...)
 - PHP Version: ![PHP Version](https://img.shields.io/badge/php-...)
 - Packagist: ![Packagist](https://img.shields.io/packagist/v/...)
@@ -151,11 +153,13 @@ Example roadmap in `ROADMAP.md`:
 # Roadmap
 
 ## v1.1.0 (Q2 2026)
+
 - [ ] Add support for new barcode types
 - [ ] Improve performance
 - [ ] Add more documentation examples
 
 ## v1.2.0 (Q3 2026)
+
 - [ ] Web-based barcode generator UI
 - [ ] API endpoint for barcode generation
 - [ ] Extended customization options
@@ -236,6 +240,7 @@ Hi @username,
 Thanks for opening this issue! I appreciate you reporting this.
 
 Could you provide a bit more information:
+
 1. [Specific question]
 2. [Specific question]
 

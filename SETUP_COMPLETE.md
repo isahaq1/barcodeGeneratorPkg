@@ -121,6 +121,7 @@ Your barcode generator package is now fully prepared for open source! Here's wha
 **Packagist URL**: https://packagist.org/packages/isahaq/barcode
 
 ### Key Features Documented
+
 - ✅ 32+ barcode types
 - ✅ Multiple output formats (PNG, SVG, HTML, JPG, PDF)
 - ✅ Laravel integration (Service Provider & Facade)
@@ -244,9 +245,10 @@ git push origin v1.0.0
 
 ## 🎉 Congratulations!
 
-Your package is now ready for the open-source community! 
+Your package is now ready for the open-source community!
 
 ### Remember:
+
 1. **Be welcoming** to new users and contributors
 2. **Respond promptly** to issues and pull requests
 3. **Keep documentation updated** as the package evolves

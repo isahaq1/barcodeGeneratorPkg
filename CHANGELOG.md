@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial public release
 - Support for 32+ barcode types
 - Multiple output formats (PNG, SVG, HTML, JPG, PDF)
@@ -19,16 +20,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive test suite
 
 ### Changed
+
 - Improved documentation
 - Enhanced error messages
 
 ### Fixed
+
 - Various edge cases in barcode encoding
 - Validation logic improvements
 
 ## [1.0.0] - 2026-01-01
 
 ### Added
+
 - Initial release
 - All core barcode generation functionality
 
