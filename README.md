@@ -1,3 +1,8 @@
+![License](https://img.shields.io/github/license/isahaq1/barcodeGeneratorPkg)
+![Stars](https://img.shields.io/github/stars/isahaq1/barcodeGeneratorPkg)
+![Issues](https://img.shields.io/github/issues/isahaq1/barcodeGeneratorPkg)
+
+
 ![Isahaq Barcode Generator](banner.png)
 
 # Isahaq Barcode Generator
